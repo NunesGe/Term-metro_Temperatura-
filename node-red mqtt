@@ -1,0 +1,117 @@
+[
+    {
+        "id": "1",
+        "type": "tab",
+        "label": "Fluxo Completo",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "2",
+        "type": "inject",
+        "z": "1",
+        "name": "Trigger",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "3"
+            ]
+        ]
+    },
+    {
+        "id": "3",
+        "type": "serial request",
+        "z": "1",
+        "name": "Arduino Serial",
+        "serial": "4",
+        "x": 350,
+        "y": 100,
+        "wires": [
+            [
+                "5"
+            ]
+        ]
+    },
+    {
+        "id": "5",
+        "type": "function",
+        "z": "1",
+        "name": "Processar Dados",
+        "func": "var temperatura = msg.payload.split(':')[1].trim();\nmsg.payload = {\n    temperatura: parseFloat(temperatura)\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 550,
+        "y": 100,
+        "wires": [
+            [
+                "6"
+            ]
+        ]
+    },
+    {
+        "id": "6",
+        "type": "mqtt out",
+        "z": "1",
+        "name": "MQTT Output",
+        "topic": "sensor/temperature",
+        "qos": "",
+        "retain": "",
+        "broker": "7",
+        "x": 750,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "4",
+        "type": "serial-port",
+        "serialport": "COM6",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": false
+    },
+    {
+        "id": "7",
+        "type": "mqtt-broker",
+        "name": "Broker MQTT",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    }
+]
